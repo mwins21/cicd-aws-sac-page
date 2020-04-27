@@ -1,0 +1,71 @@
+name: 'Validate changes via Terraform'
+on:
+  - pull_request
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Terraform
+      env:
+            TERRAFORM_VERSION: "0.12.24"
+      run: |
+        tf_version=$TERRAFORM_VERSION
+        wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
+        unzip terraform_"$tf_version"_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+    - name: 'Install terraform-provider-luminate'
+      run: |
+          mkdir -p .terraform/plugins/linux_amd64/
+          cd .terraform/plugins/linux_amd64/
+          curl -L https://github.com/Broadcom/terraform-provider-luminate/releases/latest/download/terraform-provider-luminate-linux.zip -o terraform-provider-luminate-linux.zip
+          unzip terraform-provider-luminate-linux.zip
+          rm terraform-provider-luminate-linux.zip
+    - name: Verify Terraform version
+      run: terraform --version
+    - name: Terraform init
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        LUMINATE_API_CLIENT_ID: ${{ secrets.LUMINATE_API_CLIENT_ID }}
+        LUMINATE_API_CLIENT_SECRET: ${{ secrets.LUMINATE_API_CLIENT_SECRET }}
+        TF_VAR_git_repo: ${{ github.repository }}
+        TF_VAR_git_branch: ${{ github.head_ref }}
+      run: terraform init -input=false
+    - name: Terraform validation
+      run: terraform validate
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        LUMINATE_API_CLIENT_ID: ${{ secrets.LUMINATE_API_CLIENT_ID }}
+        LUMINATE_API_CLIENT_SECRET: ${{ secrets.LUMINATE_API_CLIENT_SECRET }}
+        TF_VAR_git_repo: ${{ github.repository }}
+        TF_VAR_git_branch: ${{ github.head_ref }}
+    - name: Terraform apply
+      run: terraform apply -auto-approve -input=false
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        LUMINATE_API_CLIENT_ID: ${{ secrets.LUMINATE_API_CLIENT_ID }}
+        LUMINATE_API_CLIENT_SECRET: ${{ secrets.LUMINATE_API_CLIENT_SECRET }}
+        TF_VAR_git_repo: ${{ github.repository }}
+        TF_VAR_git_branch: ${{ github.head_ref }}
+    - name: Terraform output
+      run: |
+        export SITE_URL="$(terraform output nginx-demo-url)"
+        export PULL_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/issues/$PULL_NUMBER/comments \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "body": "Please visit the current build at '"$SITE_URL"'"
+          }'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        LUMINATE_API_CLIENT_ID: ${{ secrets.LUMINATE_API_CLIENT_ID }}
+        LUMINATE_API_CLIENT_SECRET: ${{ secrets.LUMINATE_API_CLIENT_SECRET }}
+        TF_VAR_git_repo: ${{ github.repository }}
+        TF_VAR_git_branch: ${{ github.head_ref }}
