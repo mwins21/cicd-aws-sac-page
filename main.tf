@@ -103,17 +103,17 @@ provider "luminate" {
 }
 
 resource "luminate_site" "site" {
-  name = "sac-cicd-site"
+  name = "AWS-CICD-Site"
 }
 
 resource "luminate_connector" "connector" {
-  name    = "sac-cicd-site-connector"
+  name    = "aws-cicd-site-connector"
   site_id = luminate_site.site.id
   type    = "linux"
 }
 
 resource "luminate_web_application" "nginx" {
-  name             = "demo-sac-cicd"
+  name             = "AWS-SAC-CICD"
   site_id          = luminate_site.site.id
   internal_address = "http://127.0.0.1:8080"
 }
