@@ -134,10 +134,10 @@ data "luminate_identity_provider" "idp" {
   identity_provider_name = "My-SAC-Okta"
 }
 
-//data "luminate_user" "users" {
-  //identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
-  //users                = [var.luminate_user]
-//}
+data "luminate_user" "users" {
+  identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
+  users                = [var.luminate_user]
+}
 
 data "luminate_group" "groups" {
   identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
