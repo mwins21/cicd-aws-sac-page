@@ -32,7 +32,7 @@ variable "luminate_user" {
   default = "michael.winslow@broadcom.com"
 }
 variable "luminate_group" {
-  default = "developers"
+  default = "Developers"
 }
 variable "git_repo" {
   default = ""
