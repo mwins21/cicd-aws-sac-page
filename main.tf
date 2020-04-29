@@ -31,6 +31,9 @@ variable "tenant_domain" {
 variable "luminate_user" {
   default = "michael.winslow@broadcom.com"
 }
+variable "luminate_group" {
+  default = "developers"
+}
 variable "git_repo" {
   default = ""
 }
@@ -119,9 +122,10 @@ resource "luminate_web_application" "nginx" {
 }
 
 resource "luminate_web_access_policy" "web-access-policy" {
-  name                 = "web-access-policy"
+  name                 = "AWS-DEV-access-policy"
   identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
   user_ids             = data.luminate_user.users.user_ids
+  group_ids            = data.luminate_group
   applications         = [luminate_web_application.nginx.id]
 }
 
