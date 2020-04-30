@@ -28,12 +28,17 @@ variable "ssh_key_name" {
 variable "tenant_domain" {
   default = "symcmwinslow.luminatesite.com"
 }
+variable "identity_provider" {
+  default = "My-SAC-Okta"
+  //default = "local"
+}
 variable "luminate_user" {
-  //default = "michael.winslow@broadcom.com"
-  default = "mikewinslow@symcmwinslow.luminatesite.com"
+  default = "michael.winslow@broadcom.com"
+  //default = "mikewinslow@symcmwinslow.luminatesite.com"
 }
 variable "luminate_group" {
   default = "Developers"
+  //default = "Developer"
 }
 variable "git_repo" {
   default = ""
@@ -132,8 +137,9 @@ resource "luminate_web_access_policy" "web-access-policy" {
 
 // Change for Account in SAC
 data "luminate_identity_provider" "idp" {
+  identity_provider_name = [var.identity_provider]
   //identity_provider_name = "My-SAC-Okta"
-  identity_provider_name = "local"
+  //identity_provider_name = "local"
 }
 
 data "luminate_user" "users" {
@@ -143,8 +149,7 @@ data "luminate_user" "users" {
 
 data "luminate_group" "groups" {
   identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
-  //groups               = [var.luminate_group]
-  groups               = ["Developer"]
+  groups               = [var.luminate_group]
 }
 
 // Output variables
