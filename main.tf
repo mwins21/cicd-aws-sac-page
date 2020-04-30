@@ -133,7 +133,7 @@ resource "luminate_web_access_policy" "web-access-policy" {
 // Change for Account in SAC
 data "luminate_identity_provider" "idp" {
   //identity_provider_name = "My-SAC-Okta"
-  identity_provider_name = "Local"
+  identity_provider_name = "local"
 }
 
 data "luminate_user" "users" {
