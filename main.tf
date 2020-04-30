@@ -28,10 +28,10 @@ variable "ssh_key_name" {
 variable "tenant_domain" {
   default = "symcmwinslow.luminatesite.com"
 }
-variable "identity_provider" {
-  default = "My-SAC-Okta"
+//variable "identity_provider" {
+  //default = "My-SAC-Okta"
   //default = "local"
-}
+//}
 variable "luminate_user" {
   default = "michael.winslow@broadcom.com"
   //default = "mikewinslow@symcmwinslow.luminatesite.com"
@@ -137,8 +137,8 @@ resource "luminate_web_access_policy" "web-access-policy" {
 
 // Change for Account in SAC
 data "luminate_identity_provider" "idp" {
-  identity_provider_name = [var.identity_provider]
-  //identity_provider_name = "My-SAC-Okta"
+  //identity_provider_name = [var.identity_provider]
+  identity_provider_name = "My-SAC-Okta"
   //identity_provider_name = "local"
 }
 
