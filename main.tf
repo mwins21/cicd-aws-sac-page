@@ -141,8 +141,7 @@ data "luminate_user" "users" {
 
 data "luminate_group" "groups" {
   identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
-  //identity_provider_id = "My-SAC-Okta"
-  groups                = [var.luminate_group]
+  groups               = [var.luminate_group]
   //groups                = ["Developers"]
 }
 
