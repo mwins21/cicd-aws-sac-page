@@ -29,7 +29,8 @@ variable "tenant_domain" {
   default = "symcmwinslow.luminatesite.com"
 }
 variable "luminate_user" {
-  default = "michael.winslow@broadcom.com"
+  //default = "michael.winslow@broadcom.com"
+  default = "mikewinslow@symcmwinslow.luminatesite.com"
 }
 variable "luminate_group" {
   default = "Developers"
@@ -131,7 +132,8 @@ resource "luminate_web_access_policy" "web-access-policy" {
 
 // Change for Account in SAC
 data "luminate_identity_provider" "idp" {
-  identity_provider_name = "My-SAC-Okta"
+  //identity_provider_name = "My-SAC-Okta"
+  identity_provider_name = "Local"
 }
 
 data "luminate_user" "users" {
@@ -141,8 +143,8 @@ data "luminate_user" "users" {
 
 data "luminate_group" "groups" {
   identity_provider_id = data.luminate_identity_provider.idp.identity_provider_id
-  groups                = [var.luminate_group]
-  //groups               = ["Developers"]
+  //groups               = [var.luminate_group]
+  groups               = ["Developer"]
 }
 
 // Output variables
