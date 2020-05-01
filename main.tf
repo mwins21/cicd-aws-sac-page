@@ -8,7 +8,7 @@
 */
 
 // Variables
-// Change for Account in AWS / GCP??
+// Change for Account in AWS
 
 variable "region" {
   default = "us-west-1"
