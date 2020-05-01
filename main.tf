@@ -48,7 +48,7 @@ variable "git_branch" {
 }
 
 // Terraform init
-// Where to store the data/template saving the state in S3 or GCS
+// Where to store the data/template saving the state in S3
 
 terraform {
   required_version = ">=0.12.24"
